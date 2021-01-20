@@ -8,11 +8,11 @@ const frameLeft = rect_panel.left;
 const frameWidth = rect_panel.width;
 const frameY = rect_panel.y;
 const speedSet = [
-  { ms: 16, px: 0.5 },
-  { ms: 16, px: 1 },
-  { ms: 16, px: 2 },
-  { ms: 16, px: 3 },
+  // { ms: 16, px: 0.5 },
+  // { ms: 16, px: 1 },
   { ms: 16, px: 4 },
+  { ms: 16, px: 5 },
+  { ms: 16, px: 6 },
 ];
 const TRACKS = 5;
 let divPool = Array.from(Array(TRACKS).keys()).map((i) => []);
@@ -37,14 +37,20 @@ btn.addEventListener("click", () => {
 
 //@ functions-----------------------------------------------------------------------
 const getWaitTime = (id, track, pool, ms, px, widthOfframe) => {
+  const trackIndex = track - 1;
   console.log(id);
-  if (pool[track].length === 0) return 0;
-  let previousStr = pool[track][pool[track].length - 1];
+  if (pool[trackIndex].length === 0) return 0;
+  let firstStr = pool[trackIndex][0];
+  let previousStr = pool[trackIndex][pool[trackIndex].length - 1];
+  //   let FtTail = firstStr.tail;
+  //   let FtMs = firstStr.ms;
+  //   let FtPx = firstStr.px;
+  let PSTail = previousStr.tail;
   let PSMs = previousStr.ms;
   let PSpx = previousStr.px;
   //   console.log("the pool track", pool[track]);
   let PSTimeWaits = 0;
-  pool[track].map((i) => {
+  pool[trackIndex].map((i) => {
     if (i.id !== id) {
       let theRuningTime;
       let distance = i.tail - frameLeft;
@@ -54,11 +60,24 @@ const getWaitTime = (id, track, pool, ms, px, widthOfframe) => {
     }
   });
   console.log("the PSTIMEWait", PSTimeWaits);
-  let positionOfPS = previousStr.x;
-  let myRuningTime = (widthOfframe / px) * ms;
+  //   let positionOfPS = previousStr.x;
+  //   let myRuningTime = (widthOfframe / px) * ms;
+  //   let firstItemGap =
+  //     ((frameRight - FtTail) / FtPx) * FtMs !== 0
+  //       ? ((frameRight - FtTail) / FtPx) * FtMs
+  //       : 0;
+  let previousGap =
+    ((frameRight - PSTail) / PSpx) * PSMs !== 0
+      ? ((frameRight - PSTail) / PSpx) * PSMs
+      : 0;
 
+  console.log("PSpx", PSpx);
+  //   console.log("the gap", (frameRight - PSTail) / PSpx);
+  console.log("the PSTTail", PSTail);
+  console.log("the frameRight", frameRight);
+  console.log("the previousGap", previousGap);
   //   let waitTime = PSTimeWaits - (positionOfPS / PSpx) * PSMs + myRuningTime;
-  let waitTime = PSTimeWaits;
+  let waitTime = PSTimeWaits - previousGap;
   //   let waitTime = (positionOfPS / PSpx) * PSMs - myRuningTime;
 
   return waitTime;
@@ -71,8 +90,9 @@ const runingTime = (ms, px, widthOfframe) => {
 
 const addNewStrAndPushToPool = (str) => {
   //random Track
-  const tracks = TRACKS - 1; // Get start from 0 to TRACKS - 1.
+  const tracks = TRACKS; // Get start from 0 to TRACKS - 1.
   const track = Math.floor(Math.random() * tracks);
+  console.log("the track", track);
   //   const speed = speedSet[0];
   const speed = speedSet[Math.floor(Math.random() * speedSet.length)];
   //   const myRunningTime = (speed.ms / speed.px)
@@ -102,8 +122,9 @@ const addNewStrAndPushToPool = (str) => {
       frameWidth
     ),
   };
+  const trackIndex = track - 1;
 
-  divPool[track].push(bullet);
+  divPool[trackIndex].push(bullet);
   console.log(bullet);
   return bullet;
 };
@@ -139,12 +160,13 @@ const moveDiv = (currentX, id, bullet) => {
   let divThen = document.getElementById(id);
   let theWidth = divThen.clientWidth;
   const currentTracck = bullet.track;
+  const trackIndex = currentTracck - 1;
   const bulletId = bullet.id;
   const bulletPx = bullet.px;
   const bulletMs = bullet.ms;
 
   if (currentX < frameLeft - theWidth) {
-    console.log(divPool);
+    // console.log(divPool);
     divPool[currentTracck] = divPool[currentTracck].filter(
       (i) => i.id !== bulletId
     );
@@ -153,7 +175,7 @@ const moveDiv = (currentX, id, bullet) => {
 
   //   console.log(divPool);
   setTimeout(() => {
-    divPool[currentTracck].map((i, idx) => {
+    divPool[trackIndex].map((i, idx) => {
       if (i.id === bulletId) {
         i.x = currentX;
         i.width = theWidth;
