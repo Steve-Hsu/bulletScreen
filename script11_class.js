@@ -17,7 +17,7 @@ class BulletScreen {
     this.panel = panel;
     this.input = input;
     this.btn = btn;
-    this.panel_rect = this.panel.getBoundingClientRect;
+    this.panel_rect = this.panel.getBoundingClientRect();
     this.frameRight = this.panel_rect.right;
     this.frameLeft = this.panel_rect.left;
     this.frameWidth = this.panel_rect.width;
