@@ -4,6 +4,15 @@ const input = document.querySelector("#input_01");
 const btn = document.querySelector(".input_btn");
 
 class BulletScreen {
+  // @ Introcude:
+  // @ Attribute:
+  //      panel : div, The frame of the bulletScreen, in practice, it should be the screen of vedio.
+  //      input : the input to enter the string for the user
+  //      btn : For user to send out the meg
+  // @ Usage:
+  // ".start()" : After declare a instance for the class, call this function to start the addEventListener for input and btn.
+  // ".shootString("the String here")" : You can shoot any string directly by this function, the attribute it takes is the string you enter.
+  // ".setDefaultValue(panel, input, btn, tracks)" : You can reset the attributes by this function.
   constructor(panel, input, btn, tracks) {
     this.panel = panel;
     this.input = input;
@@ -24,6 +33,12 @@ class BulletScreen {
     this.divPool = Array.from(Array(this.tracks).keys()).map(() => []);
     this.STRING = "";
   }
+  setDefaultValue = (panel, input, btn, tracks) => {
+    this.panel = panel;
+    this.input = input;
+    this.btn = btn;
+    this.tracks = tracks;
+  };
   setString = (str) => {
     this.STRING = str;
   };
@@ -220,5 +235,6 @@ class BulletScreen {
   };
 }
 
+// Test
 let bulletScreen = new BulletScreen(panel, input, btn, 4);
 bulletScreen.start();
