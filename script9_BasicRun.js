@@ -9,10 +9,8 @@ let frameWidth = rect_panel.width;
 let frameY = rect_panel.y;
 const speedSet = [
   { ms: 16, px: 2 },
-  //   { ms: 16, px: 5 },
-  //   { ms: 16, px: 8 },
-  // { ms: 16, px: 5 },
-  //   { ms: 16, px: 10 },
+  { ms: 16, px: 5 },
+  { ms: 16, px: 8 },
 ];
 const fontSizeSet = [18, 22, 28];
 const TRACKS = 8;
@@ -75,7 +73,7 @@ const addNewStrAndPushToPool = (str) => {
   const PSId = divPool[track][divPool[track].length - 1]
     ? divPool[track][divPool[track].length - 1].id
     : "noPS";
-  // console.log(divPool[track][divPool[track]])
+
   // 1 str in chinese is about 16 px, number and str in english are about 8px. Here take the central value 12.
   const widthOfStr = str.length * 12;
   let bullet = {
@@ -159,7 +157,6 @@ const moveDiv = (currentX, id, bullet) => {
 
   //If the div run into the left side of the frame
   if (currentX < current_left - theWidth) {
-    // console.log(divPool);
     divPool[currentTrack] = divPool[currentTrack].filter(
       (i) => i.id !== bulletId
     );
@@ -172,20 +169,10 @@ const moveDiv = (currentX, id, bullet) => {
   const PStail = PS ? PS.tail : 0;
   let bulletPx = bullet.px;
   let newPosition = currentX;
-  // console.log(PS ? "have PS" : "no PS");
+
   setTimeout(() => {
     divPool[currentTrack].map((i, idx) => {
       if (i.id === bulletId) {
-        // if (current_rect_panel.width !== rect_panel.width) {
-        //   let widthChanged = rect_panel.width / current_rect_panel.width;
-        //   let heightChanged = rect_panel.height / current_rect_panel;
-        //   let leftChanged = rect_panel.left - current_rect_panel.left;
-        //   let rightChanged = rect_panel.right - current_rect_panel.right;
-        //   currentX = currentX * widthChanged;
-        //   console.log("curret_rect", current_rect_panel);
-        //   console.log("original rect", rect_panel);
-        // }
-
         i.x = currentX;
         i.width = theWidth;
         i.tail = currentX + theWidth;
