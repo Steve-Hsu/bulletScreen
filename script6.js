@@ -8,13 +8,13 @@ const frameLeft = rect_panel.left;
 const frameWidth = rect_panel.width;
 const frameY = rect_panel.y;
 const speedSet = [
-  { ms: 16, px: 2 },
+  // { ms: 16, px: 2 },
   // { ms: 16, px: 3 },
   // { ms: 16, px: 4 },
   // { ms: 16, px: 5 },
   { ms: 16, px: 6 },
 ];
-const TRACKS = 3;
+const TRACKS = 1;
 const chasingRate = 0.5;
 let divPool = Array.from(Array(TRACKS).keys()).map((i) => []);
 let STRING = "";
@@ -117,16 +117,15 @@ const addNewStrAndPushToPool = (str) => {
       this.x = x;
     },
     runingTime: runingTime(speed.ms, speed.px, frameWidth),
-    timeWait: 0,
-    // timeWait: getWaitTime(
-    //   newId,
-    //   track,
-    //   divPool,
-    //   frameWidth,
-    //   speed.ms,
-    //   speed.px,
-    //   frameWidth
-    // ),
+    timeWait: getWaitTime(
+      newId,
+      track,
+      divPool,
+      frameWidth,
+      speed.ms,
+      speed.px,
+      frameWidth
+    ),
     PSId: PSId,
   };
   //   const trackIndex = track - 1;
@@ -164,13 +163,13 @@ const drawDiv = (div, bullet) => {
 };
 
 const moveDiv = (currentX, id, bullet) => {
-  let divThen = document.getElementById(id);
-  let theWidth = divThen.clientWidth;
+  let divCurrent = document.getElementById(id);
+  let theWidth = divCurrent.clientWidth;
   const currentTrack = bullet.track;
-
-  const bulletId = bullet.id;
-
-  const bulletMs = bullet.ms;
+  let currentStrObj = divPool[currentTrack].find(({ id }) => id === id);
+  const bulletId = currentStrObj.id;
+  const bulletPx = currentStrObj.px;
+  const bulletMs = currentStrObj.ms;
 
   if (currentX < frameLeft - theWidth) {
     // console.log(divPool);
@@ -178,33 +177,27 @@ const moveDiv = (currentX, id, bullet) => {
       (i) => i.id !== bulletId
     );
     console.log(divPool);
-    return divThen.remove();
+    return divCurrent.remove();
   }
+
   const PS = divPool[currentTrack].find(({ id }) => id === bullet.PSId);
   const PStail = PS ? PS.tail : 0;
-  let bulletPx = bullet.px;
-  // console.log(PS ? "have PS" : "no PS");
+  //   console.log(divPool);
   setTimeout(() => {
-    divPool[currentTrack].map((i, idx) => {
-      if (i.id === bulletId) {
-        i.x = currentX;
-        i.width = theWidth;
-        i.tail = currentX + theWidth;
-        if (PS && currentX < 10 + PStail) {
-          bulletPx = 1;
-        } else if (PS && currentX < 20 + PStail) {
-          bulletPx = 2;
-        } else if (PS && currentX < 30 + PStail) {
-          bulletPx = 3;
-        } else if (PS && currentX < 50 + PStail) {
-          bulletPx = 4;
-        } else if (PS && currentX < 80 + PStail) {
-          bulletPx = 5;
-        }
-      }
-    });
+    console.log(divPool[0]);
+    currentStrObj.x = currentX;
+    currentStrObj.width = theWidth;
+    currentStrObj.tail = currentX + theWidth;
 
-    divThen.style.left = currentX + "px";
+    // divPool[currentTrack].map((i, idx) => {
+    //   if (i.id === bulletId) {
+    //     i.x = currentX;
+    //     i.width = theWidth;
+    //     i.tail = currentX + theWidth;
+    //   }
+    // });
+
+    divCurrent.style.left = currentX + "px";
     moveDiv(currentX - bulletPx, id, bullet);
   }, bulletMs);
 };

@@ -9,13 +9,13 @@ const frameWidth = rect_panel.width;
 const frameY = rect_panel.y;
 const speedSet = [
   { ms: 16, px: 2 },
-  // { ms: 16, px: 3 },
-  // { ms: 16, px: 4 },
+  { ms: 16, px: 5 },
+  { ms: 16, px: 8 },
   // { ms: 16, px: 5 },
-  { ms: 16, px: 6 },
+  //   { ms: 16, px: 10 },
 ];
-const TRACKS = 3;
-const chasingRate = 0.5;
+const TRACKS = 1;
+
 let divPool = Array.from(Array(TRACKS).keys()).map((i) => []);
 let STRING = "";
 //@ Event trigger-----------------------------------------------------------------------
@@ -31,45 +31,14 @@ input.addEventListener("keyup", function (e) {
 });
 
 btn.addEventListener("click", () => {
-  if (STRING !== "") shootString(STRING);
-  input.value = "";
-  STRING = "";
+  if (STRING !== "") {
+    shootString(STRING);
+    input.value = "";
+    STRING = "";
+  }
 });
 
 //@ functions-----------------------------------------------------------------------
-const getWaitTime = (id, track, pool, ms, px, widthOfframe) => {
-  //   const trackIndex = track - 1;
-  console.log(id);
-  if (pool[track].length === 0) return 0;
-  let previousStr = pool[track][pool[track].length - 1];
-  let PSTail = previousStr.tail;
-  let PSMs = previousStr.ms;
-  let PSpx = previousStr.px;
-
-  let PSTimeWaits = 0;
-  pool[track].map((i) => {
-    if (i.id !== id) {
-      let PSruningTime;
-      let distance = (i.tail - frameLeft) * chasingRate;
-      PSruningTime = (distance / i.px) * i.ms;
-      PSTimeWaits += PSruningTime;
-    }
-  });
-
-  let previousGap =
-    ((frameRight - PSTail) / PSpx) * PSMs !== 0
-      ? ((frameRight - PSTail) / PSpx) * PSMs
-      : 0;
-  let waitTime = PSTimeWaits - previousGap;
-
-  return waitTime;
-};
-
-const runingTime = (ms, px, widthOfframe) => {
-  let myRuningTime = (widthOfframe / px) * ms;
-  return myRuningTime;
-};
-
 const selectTrack = (tracks, pool) => {
   let firstLayerTrack = Math.floor(Math.random() * tracks);
   let num = 0;
@@ -113,21 +82,9 @@ const addNewStrAndPushToPool = (str) => {
     tail: frameRight + widthOfStr,
     ms: speed.ms,
     px: speed.px,
-    getX: (x) => {
-      this.x = x;
-    },
-    runingTime: runingTime(speed.ms, speed.px, frameWidth),
     timeWait: 0,
-    // timeWait: getWaitTime(
-    //   newId,
-    //   track,
-    //   divPool,
-    //   frameWidth,
-    //   speed.ms,
-    //   speed.px,
-    //   frameWidth
-    // ),
     PSId: PSId,
+    collision: false,
   };
   //   const trackIndex = track - 1;
 
@@ -183,6 +140,7 @@ const moveDiv = (currentX, id, bullet) => {
   const PS = divPool[currentTrack].find(({ id }) => id === bullet.PSId);
   const PStail = PS ? PS.tail : 0;
   let bulletPx = bullet.px;
+  let newPosition = currentX;
   // console.log(PS ? "have PS" : "no PS");
   setTimeout(() => {
     divPool[currentTrack].map((i, idx) => {
@@ -190,21 +148,26 @@ const moveDiv = (currentX, id, bullet) => {
         i.x = currentX;
         i.width = theWidth;
         i.tail = currentX + theWidth;
-        if (PS && currentX < 10 + PStail) {
+        if (PS && currentX < PStail) {
+          // if the currentStr accidentally run ahead the previous str, then slow it down
           bulletPx = 1;
-        } else if (PS && currentX < 20 + PStail) {
+        } else if (PS && currentX < 5 + PStail) {
           bulletPx = 2;
         } else if (PS && currentX < 30 + PStail) {
-          bulletPx = 3;
-        } else if (PS && currentX < 50 + PStail) {
+          bulletPx = 2.5;
+        } else if (PS && currentX < 60 + PStail) {
+          bulletPx = 3.5;
+        } else if (PS && currentX < 90 + PStail) {
+          bulletPx = 3.8;
+        } else if (PS && currentX < 120 + PStail) {
           bulletPx = 4;
-        } else if (PS && currentX < 80 + PStail) {
-          bulletPx = 5;
+        } else if (PS && currentX < 160 + PStail) {
+          bulletPx = bulletPx * 0.952;
         }
       }
     });
 
     divThen.style.left = currentX + "px";
-    moveDiv(currentX - bulletPx, id, bullet);
+    moveDiv(newPosition - bulletPx, id, bullet);
   }, bulletMs);
 };
