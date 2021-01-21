@@ -11,7 +11,7 @@ class BulletScreen {
   //      btn : For user to send out the meg
   // @ Usage:
   // ".start()" : After declare a instance for the class, call this function to start the addEventListener for input and btn.
-  // ".shooSTRING("the String here")" : You can shoot any string directly by this function, the attribute it takes is the string you enter.
+  // ".shootSTRING("the String here")" : You can shoot any string directly by this function, the attribute it takes is the string you enter.
 
   constructor(panel, input, btn, tracks) {
     this.panel = panel;
@@ -62,7 +62,7 @@ class BulletScreen {
   btnListener = () => {
     this.btn.addEventListener("click", () => {
       if (this.STRING !== "") {
-        this.shooSTRING(this.STRING);
+        this.shootSTRING(this.STRING);
         this.setInput("");
         this.setSTRING("");
       }
@@ -134,14 +134,15 @@ class BulletScreen {
     return bullet;
   };
 
-  shooSTRING = (STRING) => {
+  shootSTRING = (STRING) => {
+    let bullet = this.addNewStrAndPushToPool(STRING);
     this.rect_panel = this.panel.getBoundingClientRect();
     this.frameRight = this.rect_panel.right;
     this.frameLeft = this.rect_panel.left;
     this.frameWidth = this.rect_panel.width;
     this.frameY = this.rect_panel.y;
 
-    let bullet = this.addNewStrAndPushToPool(STRING);
+    // let bullet = this.addNewStrAndPushToPool(STRING);
     let newDiv = document.createElement("div");
     newDiv.classList.add("bullet");
     newDiv.setAttribute("id", bullet.id);
