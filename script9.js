@@ -9,8 +9,8 @@ let frameWidth = rect_panel.width;
 let frameY = rect_panel.y;
 const speedSet = [
   { ms: 16, px: 2 },
-  { ms: 16, px: 5 },
-  { ms: 16, px: 8 },
+  //   { ms: 16, px: 5 },
+  //   { ms: 16, px: 8 },
   // { ms: 16, px: 5 },
   //   { ms: 16, px: 10 },
 ];
@@ -104,7 +104,6 @@ const addNewStrAndPushToPool = (str) => {
 const shootString = (STRING) => {
   // Renew the width of the panel to prevent not match the size if user change the width of the window;
   rect_panel = panel.getBoundingClientRect();
-  rect_panel = panel.getBoundingClientRect();
   frameRight = rect_panel.right;
   frameLeft = rect_panel.left;
   frameWidth = rect_panel.width;
@@ -147,7 +146,9 @@ const drawDiv = (div, bullet) => {
 };
 
 const moveDiv = (currentX, id, bullet) => {
-  let current_rect_panel = panel.getBoundingClientRect();
+  // Renew the width of the panel to prevent not match the size if user change the width of the window;
+  rect_panel = panel.getBoundingClientRect();
+  let current_left = rect_panel.left;
   let divThen = document.getElementById(id);
   let theWidth = divThen.clientWidth;
   const currentTrack = bullet.track;
@@ -156,11 +157,8 @@ const moveDiv = (currentX, id, bullet) => {
 
   const bulletMs = bullet.ms;
 
-  //If the div run into the left side of the frame or user change the width of the screen delete the current div
-  if (
-    currentX < frameLeft - theWidth ||
-    current_rect_panel.left !== rect_panel.left
-  ) {
+  //If the div run into the left side of the frame
+  if (currentX < current_left - theWidth) {
     // console.log(divPool);
     divPool[currentTrack] = divPool[currentTrack].filter(
       (i) => i.id !== bulletId
@@ -168,6 +166,7 @@ const moveDiv = (currentX, id, bullet) => {
     console.log(divPool);
     return divThen.remove();
   }
+  //user change the width of the screen delete the current div
 
   const PS = divPool[currentTrack].find(({ id }) => id === bullet.PSId);
   const PStail = PS ? PS.tail : 0;
@@ -177,9 +176,20 @@ const moveDiv = (currentX, id, bullet) => {
   setTimeout(() => {
     divPool[currentTrack].map((i, idx) => {
       if (i.id === bulletId) {
+        // if (current_rect_panel.width !== rect_panel.width) {
+        //   let widthChanged = rect_panel.width / current_rect_panel.width;
+        //   let heightChanged = rect_panel.height / current_rect_panel;
+        //   let leftChanged = rect_panel.left - current_rect_panel.left;
+        //   let rightChanged = rect_panel.right - current_rect_panel.right;
+        //   currentX = currentX * widthChanged;
+        //   console.log("curret_rect", current_rect_panel);
+        //   console.log("original rect", rect_panel);
+        // }
+
         i.x = currentX;
         i.width = theWidth;
         i.tail = currentX + theWidth;
+        i.y = rect_panel.y + i.track * 28 + 2;
         if (PS && currentX < PStail) {
           // if the currentStr accidentally run ahead the previous str, then slow it down
           bulletPx = 1;
