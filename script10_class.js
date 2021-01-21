@@ -182,7 +182,7 @@ class BulletScreen {
   };
 
   moveDiv = (currentX, id, bullet) => {
-    let rect_panel = panel.getBoundingClientRect();
+    let rect_panel = this.panel.getBoundingClientRect();
     let current_left = rect_panel.left;
     let targetDiv = document.getElementById(id);
     let theWidth = targetDiv.clientWidth;
