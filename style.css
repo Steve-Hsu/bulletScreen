@@ -58,8 +58,10 @@ body {
   background-color: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(40px);
   border: solid 2px transparent;
+  border-radius: 7px;
   background-clip: padding-box;
   box-shadow: 10px 10px 10px rgba(46, 54, 68, 0.03);
+  line-height: 0.9;
   /* text-shadow: -1px -1px #444; */
 }
 

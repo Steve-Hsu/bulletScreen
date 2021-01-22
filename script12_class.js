@@ -33,6 +33,7 @@ class BulletScreen {
     this.colorRange = 220; // Value from 0 - 255 for RGB;
     this.divPool = Array.from(Array(this.tracks).keys()).map(() => []);
     this.STRING = "";
+    this.topPadding = 20;
   }
 
   setSTRING = (str) => {
@@ -116,7 +117,9 @@ class BulletScreen {
       track,
       x: this.frameRight + 10,
       y:
-        this.frameY + track * this.fontSizeSet[this.fontSizeSet.length - 1] + 2,
+        this.frameY +
+        track * this.fontSizeSet[this.fontSizeSet.length - 1] +
+        this.topPadding, // 20 is padding of top,
       width: 0,
       tail: this.frameRight + widthOfStr,
       ms: speed.ms,
@@ -144,7 +147,7 @@ class BulletScreen {
     bullet.y =
       this.frameY +
       bullet.track * this.fontSizeSet[this.fontSizeSet.length - 1] +
-      2;
+      this.topPadding; // 20 is padding of top,;
 
     // let bullet = this.addNewStrAndPushToPool(STRING);
     let newDiv = document.createElement("div");
@@ -212,7 +215,7 @@ class BulletScreen {
           i.y = rect_panel.y + i.track * 28 + 2;
           if (PS && currentX < PStail) {
             // if the currentStr accidentally run ahead the previous str, then slow it down
-            bulletPx = 1;
+            bulletPx = 0.5;
           } else if (PS && currentX < 5 + PStail) {
             bulletPx = 2;
           } else if (PS && currentX < 30 + PStail) {
@@ -236,5 +239,85 @@ class BulletScreen {
 }
 
 // Test
-let bulletScreen = new BulletScreen(panel, input, btn, 4);
+let bulletScreen = new BulletScreen(panel, input, btn, 10);
 bulletScreen.start();
+
+const lyric = [
+  "早知結果如此何必當初曾相逢",
+  "相逢之後何須再問分手的理由",
+  "沒有月的星空",
+  "是我自己的星空",
+  "我飛也可以 跳也可以",
+  "不感到寂寞 有流星陪伴我",
+  "當然也許妳會感到一絲絲愧疚",
+  "諾言本身不會後悔出口的理由",
+  "沒有妳的影蹤",
+  "有我自己的影蹤",
+  "我哭也可以 笑也可以",
+  "天長或地久 是愛情的盡頭",
+  "下著雨的夜晚最美",
+  "將所有景物拋在半空之間",
+  "有妳的笑我無法成眠",
+  "無法成眠",
+  "怎又回到了起點",
+  "快讓我沒有力氣",
+  "快讓我沒有力氣",
+  "去想念妳",
+  "讓我可以隨著落在窗外的小雨消失在茫茫大地",
+  "讓我飛～讓我飛～在夜空",
+  "夜空裡才會讓我的心和懦弱那頭離得比較遠",
+  "飛翔時傷悲是一種奢侈的行為",
+  "我怎麼突然有一種莫名的喜悅當我穿梭在黑暗裡面",
+  "讓我飛～讓我飛～在夜空",
+  "夜空裡才會讓我的心和懦弱那頭離得比較遠",
+  "飛翔時傷悲是一種奢侈的行為",
+  "我變成一朵放縱的輕煙和小雨纏綿在冷冷北風裡面…",
+];
+
+const lyric2 = [
+  "たとえば",
+  "どうにかして君の中 ああ入っていって",
+  "その瞳から僕をのぞいたら",
+  "いろんなことちょっとはわかるかも",
+  "愛すれば",
+  "愛するほど",
+  "霧の中迷いこんで",
+  "手をつないだら行ってみよう",
+  "燃えるような月の輝く丘に",
+  "迎えにゆくからそこにいてよ",
+  "かけらでもいい",
+  "君の気持ち知るまで",
+  "今夜僕は寝ないよ",
+  "痛いこと",
+  "気持ちいいこと",
+  "それはみんな人それぞれで",
+  "ちょっとした違いにつまづいて",
+  "またしても僕は派手にころんだ",
+  "傷ついて",
+  "やっとわかる",
+  "それでもいい",
+  "遅くはない",
+  "手をつないだら行ってみよう",
+  "あやしい星の潜む丘に 茂みの奥へと進んでゆこう",
+  "怪我してもいい",
+  "はじけるような笑顔の",
+  "向こう側をみたいよ",
+  "手をつないだら行ってみよう",
+  "まんまるい月の輝く丘に",
+  "誰もがみんな照らしだされて",
+  "心の模様が空に映ってる",
+  "いつでもそうやって",
+  "笑ってないで",
+  "かけらでもいい",
+  "君の気持ち知るまで",
+  "今夜は一緒にいたいよ",
+];
+
+let time = 0;
+
+lyric2.map((i) => {
+  time = time + 300;
+  setTimeout(() => {
+    bulletScreen.shootSTRING(bulletScreen.newBullet(i), bulletScreen.panel);
+  }, time);
+});
