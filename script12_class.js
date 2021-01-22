@@ -115,7 +115,8 @@ class BulletScreen {
       str,
       track,
       x: this.frameRight + 10,
-      y: this.frameY + track * 28 + 2,
+      y:
+        this.frameY + track * this.fontSizeSet[this.fontSizeSet.length - 1] + 2,
       width: 0,
       tail: this.frameRight + widthOfStr,
       ms: speed.ms,
