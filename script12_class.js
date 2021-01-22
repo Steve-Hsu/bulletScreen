@@ -140,7 +140,10 @@ class BulletScreen {
     this.frameY = this.rect_panel.y;
     bullet.tail = this.frameRight + widthOfStr;
     bullet.x = this.frameRight + 10;
-    bullet.y = this.frameY + bullet.track * 28 + 2;
+    bullet.y =
+      this.frameY +
+      bullet.track * this.fontSizeSet[this.fontSizeSet.length - 1] +
+      2;
 
     // let bullet = this.addNewStrAndPushToPool(STRING);
     let newDiv = document.createElement("div");
