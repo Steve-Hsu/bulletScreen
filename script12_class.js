@@ -72,24 +72,25 @@ class BulletScreen {
   };
   selectTrack = (tracks, pool) => {
     // console.log("this.pool", this.pool);
-    console.log("the pool", pool);
+    // console.log("the pool", pool);
     let firstLayerTrack = Math.floor(Math.random() * tracks);
     let num = 0;
     let theIndexOfshortenTrack = 0;
 
-    if (pool[firstLayerTrack].length > 2) {
-      pool.map((i, idx) => {
-        if (idx === 0) {
-          num = i.length;
-        }
-        if (num < i.length) {
-          num = i.length;
-          theIndexOfshortenTrack = idx;
-        }
-      });
-    } else {
-      theIndexOfshortenTrack = firstLayerTrack;
-    }
+    // if (pool[firstLayerTrack].length > 4) {
+    //   pool.map((i, idx) => {
+    //     if (idx === 0) {
+    //       num = i.length;
+    //     }
+    //     if (num < i.length) {
+    //       num = i.length;
+    //       theIndexOfshortenTrack = idx;
+    //     }
+    //   });
+    // } else {
+    //   theIndexOfshortenTrack = firstLayerTrack;
+    // }
+    theIndexOfshortenTrack = firstLayerTrack;
     return theIndexOfshortenTrack;
   };
 
@@ -130,7 +131,7 @@ class BulletScreen {
       fontSize: fontSize,
       fontColor: fontColor,
     };
-    console.log(bullet);
+    // console.log(bullet);
     return bullet;
   };
 
@@ -166,6 +167,7 @@ class BulletScreen {
     height:-moz-fit-content;
     font-size: ${bullet.fontSize}px;
     color:${bullet.fontColor};
+    visibility:hidden;
     `
     );
     //    font-size: ${fontSizeSet[Math.floor(Math.random() * fontSizeSet)]}px`
@@ -187,17 +189,29 @@ class BulletScreen {
   moveDiv = (currentX, id, bullet) => {
     let rect_panel = this.panel.getBoundingClientRect();
     let current_left = rect_panel.left;
+    let current_right = rect_panel.right;
     let targetDiv = document.getElementById(id);
     let theWidth = targetDiv.clientWidth;
     let currentTrack = bullet.track;
     let bulletId = bullet.id;
     let bulletMs = bullet.ms;
+    let disappearPoint = 0.8;
+
+    //If the div's body (disappearPoint) run into the left side of the frame
+    if (currentX + theWidth * disappearPoint < current_left) {
+      console.log(targetDiv.style);
+      let disappearSpeed = Number("0.8" + bulletMs);
+      let newFontSize =
+        Number(targetDiv.style.fontSize.slice(0, -2)) * disappearSpeed;
+
+      targetDiv.style.fontSize = newFontSize + "px";
+    }
     //If the div run into the left side of the frame
-    if (currentX < current_left - theWidth) {
+    if (currentX < current_left - theWidth / disappearPoint) {
       this.divPool[currentTrack] = this.divPool[currentTrack].filter(
         (i) => i.id !== bulletId
       );
-      console.log(this.divPool);
+      // console.log(this.divPool);
       return targetDiv.remove();
     }
 
@@ -214,8 +228,10 @@ class BulletScreen {
           i.tail = currentX + theWidth;
           i.y = rect_panel.y + i.track * 28 + 2;
           if (PS && currentX < PStail) {
+            // targetDiv.style.color = "black";
+
             // if the currentStr accidentally run ahead the previous str, then slow it down
-            bulletPx = 0.5;
+            bulletPx = 0;
           } else if (PS && currentX < 5 + PStail) {
             bulletPx = 2;
           } else if (PS && currentX < 30 + PStail) {
@@ -229,6 +245,10 @@ class BulletScreen {
           } else if (PS && currentX < 160 + PStail) {
             bulletPx = bulletPx * 0.952;
           }
+          // Display the bullet only when the bullet start to run, if it is wating then don't show it.
+          if ((currentX > current_right && bulletPx > 0) || !PS) {
+            targetDiv.style.visibility = "visible";
+          }
         }
       });
 
@@ -239,7 +259,7 @@ class BulletScreen {
 }
 
 // Test
-let bulletScreen = new BulletScreen(panel, input, btn, 10);
+let bulletScreen = new BulletScreen(panel, input, btn, 3);
 bulletScreen.start();
 
 const lyric = [
@@ -313,11 +333,65 @@ const lyric2 = [
   "今夜は一緒にいたいよ",
 ];
 
-let time = 0;
+const lyric3 = [
+  "On the first page of our story",
+  "The future seemed so bright",
+  "Then this thing turned out so evil",
+  "I don't know why I'm still surprised",
+  "Even angels have their wicked schemes",
+  "And you take that to new extremes",
+  "But you'll always be my hero",
+  "Even though you've lost your mind",
+  "Just gonna stand there and watch me burn",
+  "Well that's alright because I like the way it hurts",
+  "Just gonna stand there and hear me cry",
+  "Well that's alright because I love the way you lie",
+  "Now there's gravel in our voices",
+  "Glasses shattered from the fight",
+  "In this tug of war you always win",
+  "Even when I'm right",
+  "Cuz you feed me fables from your head",
+  "With violent words and empty threats",
+  "And it's sick that all these battlesAre what keeps me satisfied",
+  "Just gonna stand there and watch me burn",
+  "Well that's alright because I like the way it hurts",
+  "Just gonna stand there and hear me cry",
+  "Well that's alright because I love the way you lie",
+  "I love the way you lieI love the way you lie",
+  "So maybe I'm a masochist",
+  "I try to run but I don't wanna ever leave",
+  "Till the walls are going up",
+  "I love the way you lie",
+  "I love the way you lie",
+];
 
-lyric2.map((i) => {
-  time = time + 300;
-  setTimeout(() => {
-    bulletScreen.shootSTRING(bulletScreen.newBullet(i), bulletScreen.panel);
-  }, time);
+let lyric4 = [];
+let repeatTime = 10;
+
+for (let t = 0; t < repeatTime; t++) {
+  [lyric, lyric2, lyric3].map((arr) => {
+    arr.map((i) => {
+      lyric4.push(i);
+    });
+  });
+}
+
+let time = 0;
+console.log(lyric4);
+
+const t0 = performance.now();
+
+const checkTime = lyric4.map((i) => {
+  new Promise((resolve) => {
+    time = time + 300;
+    setTimeout(() => {
+      bulletScreen.shootSTRING(bulletScreen.newBullet(i), bulletScreen.panel);
+    }, time);
+    resolve();
+  });
+});
+
+Promise.all(checkTime).then(() => {
+  const t1 = performance.now();
+  console.log("Call the map lyrics takes" + (t1 - t0) + " milliseonds");
 });
