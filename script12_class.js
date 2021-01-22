@@ -63,7 +63,7 @@ class BulletScreen {
   btnListener = () => {
     this.btn.addEventListener("click", () => {
       if (this.STRING !== "") {
-        this.shootSTRING(this.newBullet(this.STRING));
+        this.shootSTRING(this.newBullet(this.STRING), this.panel);
         this.setInput("");
         this.setSTRING("");
       }
@@ -130,13 +130,17 @@ class BulletScreen {
     return bullet;
   };
 
-  shootSTRING = (bullet) => {
+  shootSTRING = (bullet, panel) => {
+    let widthOfStr = bullet.str.length * 12;
     this.divPool[bullet.track].push(bullet);
-    this.rect_panel = this.panel.getBoundingClientRect();
+    this.rect_panel = panel.getBoundingClientRect();
     this.frameRight = this.rect_panel.right;
     this.frameLeft = this.rect_panel.left;
     this.frameWidth = this.rect_panel.width;
     this.frameY = this.rect_panel.y;
+    bullet.tail = this.frameRight + widthOfStr;
+    bullet.x = this.frameRight + 10;
+    bullet.y = this.frameY + bullet.track * 28 + 2;
 
     // let bullet = this.addNewStrAndPushToPool(STRING);
     let newDiv = document.createElement("div");
