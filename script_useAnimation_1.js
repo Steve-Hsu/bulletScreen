@@ -35,12 +35,13 @@ class BulletScreen {
     this.divPool = Array.from(Array(this.tracks).keys()).map(() => []);
     this.STRING = "";
     this.topPadding = 20;
+    this.styleRoot = document.querySelector(":root");
   }
 
-  setSTRING(str) {
+  _setSTRING(str) {
     this.STRING = str;
   }
-  setInput(str) {
+  _setInput(str) {
     this.input.value = str;
   }
 
@@ -52,7 +53,7 @@ class BulletScreen {
   //@ Set Event
   inputListener() {
     this.input.addEventListener("change", (e) => {
-      this.setSTRING(e.target.value);
+      this._setSTRING(e.target.value);
     });
 
     this.input.addEventListener("keyup", (e) => {
@@ -130,8 +131,8 @@ class BulletScreen {
       fontSize: fontSize,
       fontColor: fontColor,
     };
-    this.setInput("");
-    this.setSTRING("");
+    this._setInput("");
+    this._setSTRING("");
     // console.log(bullet);
     return bullet;
   }
@@ -192,74 +193,78 @@ class BulletScreen {
     let current_left = rect_panel.left;
     let current_right = rect_panel.right;
     let targetDiv = document.getElementById(id);
-    let theWidth = targetDiv.clientWidth;
-    let currentTrack = bullet.track;
-    let bulletId = bullet.id;
-    let bulletMs = bullet.ms;
-    let disappearPoint = 0.8;
+    this.styleRoot.style.setProperty("--rightWall", `${current_right}px`);
+    this.styleRoot.style.setProperty("--leftWall", `${current_left}px`);
+    this.styleRoot.style.setProperty("--runTime", `${bullet.px}s`);
+    targetDiv.classList.add("startMove");
+    // let theWidth = targetDiv.clientWidth;
+    // let currentTrack = bullet.track;
+    // let bulletId = bullet.id;
+    // let bulletMs = bullet.ms;
+    // let disappearPoint = 0.8;
 
-    //If the div's body (disappearPoint) run into the left side of the frame
-    if (currentX + theWidth * disappearPoint < current_left) {
-      let disappearSpeed = Number("0.8" + bulletMs);
-      let newFontSize =
-        Number(targetDiv.style.fontSize.slice(0, -2)) * disappearSpeed;
+    // //If the div's body (disappearPoint) run into the left side of the frame
+    // if (currentX + theWidth * disappearPoint < current_left) {
+    //   let disappearSpeed = Number("0.8" + bulletMs);
+    //   let newFontSize =
+    //     Number(targetDiv.style.fontSize.slice(0, -2)) * disappearSpeed;
 
-      targetDiv.style.fontSize = newFontSize + "px";
-    }
-    //If the div run into the left side of the frame
-    if (currentX < current_left - theWidth / disappearPoint) {
-      this.divPool[currentTrack] = this.divPool[currentTrack].filter(
-        (i) => i.id !== bulletId
-      );
-      // console.log(this.divPool);
-      return targetDiv.remove();
-    }
+    //   targetDiv.style.fontSize = newFontSize + "px";
+    // }
+    // //If the div run into the left side of the frame
+    // if (currentX < current_left - theWidth / disappearPoint) {
+    //   this.divPool[currentTrack] = this.divPool[currentTrack].filter(
+    //     (i) => i.id !== bulletId
+    //   );
+    //   // console.log(this.divPool);
+    //   return targetDiv.remove();
+    // }
 
-    let PS = this.divPool[currentTrack].find(({ id }) => id === bullet.PSId);
-    let PStail = PS ? PS.tail : 0;
-    let bulletPx = bullet.px;
-    let newPosition = currentX;
+    // let PS = this.divPool[currentTrack].find(({ id }) => id === bullet.PSId);
+    // let PStail = PS ? PS.tail : 0;
+    // let bulletPx = bullet.px;
+    // let newPosition = currentX;
 
-    setTimeout(() => {
-      this.divPool[currentTrack].map((i, idx) => {
-        if (i.id === bulletId) {
-          i.x = currentX;
-          i.width = theWidth;
-          i.tail = currentX + theWidth;
-          i.y = rect_panel.y + i.track * 28 + 2;
-          if (PS && currentX < PStail) {
-            // targetDiv.style.color = "black";
+    // setTimeout(() => {
+    //   this.divPool[currentTrack].map((i, idx) => {
+    //     if (i.id === bulletId) {
+    //       i.x = currentX;
+    //       i.width = theWidth;
+    //       i.tail = currentX + theWidth;
+    //       i.y = rect_panel.y + i.track * 28 + 2;
+    //       if (PS && currentX < PStail) {
+    //         // targetDiv.style.color = "black";
 
-            // if the currentStr accidentally run ahead the previous str, then slow it down
-            bulletPx = 0;
-          } else if (PS && currentX < 5 + PStail) {
-            bulletPx = 2;
-          } else if (PS && currentX < 30 + PStail) {
-            bulletPx = 2.5;
-          } else if (PS && currentX < 60 + PStail) {
-            bulletPx = 3.5;
-          } else if (PS && currentX < 90 + PStail) {
-            bulletPx = 3.8;
-          } else if (PS && currentX < 120 + PStail) {
-            bulletPx = 4;
-          } else if (PS && currentX < 160 + PStail) {
-            bulletPx = bulletPx * 0.952;
-          }
-          // Display the bullet only when the bullet start to run, if it is wating then don't show it.
-          if ((currentX > current_right && bulletPx > 0) || !PS) {
-            targetDiv.style.visibility = "visible";
-          }
-        }
-      });
+    //         // if the currentStr accidentally run ahead the previous str, then slow it down
+    //         bulletPx = 0;
+    //       } else if (PS && currentX < 5 + PStail) {
+    //         bulletPx = 2;
+    //       } else if (PS && currentX < 30 + PStail) {
+    //         bulletPx = 2.5;
+    //       } else if (PS && currentX < 60 + PStail) {
+    //         bulletPx = 3.5;
+    //       } else if (PS && currentX < 90 + PStail) {
+    //         bulletPx = 3.8;
+    //       } else if (PS && currentX < 120 + PStail) {
+    //         bulletPx = 4;
+    //       } else if (PS && currentX < 160 + PStail) {
+    //         bulletPx = bulletPx * 0.952;
+    //       }
+    //       // Display the bullet only when the bullet start to run, if it is wating then don't show it.
+    //       if ((currentX > current_right && bulletPx > 0) || !PS) {
+    //         targetDiv.style.visibility = "visible";
+    //       }
+    //     }
+    //   });
 
-      targetDiv.style.left = currentX + "px";
-      this.moveDiv(newPosition - bulletPx, id, bullet);
-    }, bulletMs);
+    //   targetDiv.style.left = currentX + "px";
+    //   this.moveDiv(newPosition - bulletPx, id, bullet);
+    // }, bulletMs);
   }
 }
 
 // Test
-let bulletScreen = new BulletScreen(panel, input, btn, 15);
+let bulletScreen = new BulletScreen(panel, input, btn, 10);
 bulletScreen.start();
 
 const lyric = [
@@ -377,7 +382,6 @@ for (let t = 0; t < repeatTime; t++) {
 }
 
 let time = 0;
-console.log(lyric4);
 
 const t0 = performance.now();
 

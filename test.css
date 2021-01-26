@@ -1,0 +1,23 @@
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+
+  /* background: linear-gradient(
+    22deg,
+    rgba(63, 94, 251, 1) 0%,
+    rgba(252, 70, 107, 0.6) 100%
+  ); */
+}
+
+#bg {
+  height: 100%;
+  width: 100%;
+  background-color: rgb(63, 94, 251);
+  clip-path: polygon(100% 10%, 10% 49%, 49% 99%, 10% 100%, 0 0);
+  position: absolute;
+  z-index: -1;
+}

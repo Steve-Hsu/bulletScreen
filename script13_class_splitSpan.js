@@ -37,10 +37,10 @@ class BulletScreen {
     this.topPadding = 20;
   }
 
-  setSTRING(str) {
+  _setSTRING(str) {
     this.STRING = str;
   }
-  setInput(str) {
+  _setInput(str) {
     this.input.value = str;
   }
 
@@ -52,7 +52,7 @@ class BulletScreen {
   //@ Set Event
   inputListener() {
     this.input.addEventListener("change", (e) => {
-      this.setSTRING(e.target.value);
+      this._setSTRING(e.target.value);
     });
 
     this.input.addEventListener("keyup", (e) => {
@@ -130,8 +130,8 @@ class BulletScreen {
       fontSize: fontSize,
       fontColor: fontColor,
     };
-    this.setInput("");
-    this.setSTRING("");
+    this._setInput("");
+    this._setSTRING("");
     // console.log(bullet);
     return bullet;
   }
@@ -156,7 +156,15 @@ class BulletScreen {
     newDiv.classList.add("bullet");
     newDiv.setAttribute("id", bullet.id);
 
-    newDiv.innerHTML = bullet.str;
+    // newDiv.innerHTML = bullet.str;
+    bullet.str.split("").map((i, idx) => {
+      let newSpan = document.createElement("span");
+      newSpan.setAttribute("id", `${bullet.id}_${idx}`);
+      newSpan.setAttribute("style", ``);
+      newSpan.innerHTML = i;
+      newDiv.appendChild(newSpan);
+    });
+    // color:${bullet.fontColor};
     newDiv.setAttribute(
       "style",
       `position:absolute; 
@@ -168,7 +176,6 @@ class BulletScreen {
     height:-moz-fit-content;
     font-size: ${bullet.fontSize}px;
     color:${bullet.fontColor};
-    visibility:hidden;
     `
     );
     //    font-size: ${fontSizeSet[Math.floor(Math.random() * fontSizeSet)]}px`
@@ -247,6 +254,9 @@ class BulletScreen {
           }
           // Display the bullet only when the bullet start to run, if it is wating then don't show it.
           if ((currentX > current_right && bulletPx > 0) || !PS) {
+            console.log("the fontSize", bullet.fontSize);
+            console.log("the width", i.width);
+            console.log("the fontSize * str", i.width / i.str.length);
             targetDiv.style.visibility = "visible";
           }
         }
@@ -259,7 +269,7 @@ class BulletScreen {
 }
 
 // Test
-let bulletScreen = new BulletScreen(panel, input, btn, 15);
+let bulletScreen = new BulletScreen(panel, input, btn, 10);
 bulletScreen.start();
 
 const lyric = [
@@ -377,13 +387,12 @@ for (let t = 0; t < repeatTime; t++) {
 }
 
 let time = 0;
-console.log(lyric4);
 
 const t0 = performance.now();
 
 const checkTime = lyric4.map((i) => {
   new Promise((resolve) => {
-    time = time + 300;
+    time = time + 500;
     setTimeout(() => {
       bulletScreen.shootSTRING(bulletScreen.newBullet(i), bulletScreen.panel);
     }, time);
