@@ -15,15 +15,15 @@ class BulletScreen {
   // ".newBullet("str")" : Create a new bullet object, which contains all information how the bullet dispalys on screen
   // ".shootSTRING("the String here")" : You can shoot any string directly by this function, the attribute it takes is the object that genereated by ".newBullet()".
 
-  constructor(panel, input, btn, tracks) {
-    this.panel = panel;
-    this.input = input;
-    this.btn = btn;
-    this.panel_rect = this.panel.getBoundingClientRect();
-    this.frameRight = this.panel_rect.right;
-    this.frameLeft = this.panel_rect.left;
-    this.frameWidth = this.panel_rect.width;
-    this.frameY = this.panel_rect.y;
+  constructor(tracks, panel, input, btn) {
+    this.panel = panel || {};
+    this.input = input || {};
+    this.btn = btn || {};
+    this.panel_rect = panel ? this.panel.getBoundingClientRect() : {};
+    this.frameRight = this.panel_rect.right || 0;
+    this.frameLeft = this.panel_rect.left || 0;
+    this.frameWidth = this.panel_rect.width || 0;
+    this.frameY = this.panel_rect.y || 0;
     this.speedSet = [
       { ms: 16, px: 2 },
       { ms: 16, px: 5 },
@@ -37,10 +37,10 @@ class BulletScreen {
     this.topPadding = 20;
   }
 
-  _setSTRING(str) {
+  setSTRING(str) {
     this.STRING = str;
   }
-  _setInput(str) {
+  setInput(str) {
     this.input.value = str;
   }
 
@@ -52,7 +52,7 @@ class BulletScreen {
   //@ Set Event
   inputListener() {
     this.input.addEventListener("change", (e) => {
-      this._setSTRING(e.target.value);
+      this.setSTRING(e.target.value);
     });
 
     this.input.addEventListener("keyup", (e) => {
@@ -115,13 +115,10 @@ class BulletScreen {
       id: newId,
       str,
       track,
-      x: this.frameRight + 10,
-      y:
-        this.frameY +
-        track * this.fontSizeSet[this.fontSizeSet.length - 1] +
-        this.topPadding, // 20 is padding of top,
+      x: 0,
+      y: 0,
       width: 0,
-      tail: this.frameRight + widthOfStr,
+      tail: 0,
       ms: speed.ms,
       px: speed.px,
       timeWait: 0,
@@ -130,9 +127,9 @@ class BulletScreen {
       fontSize: fontSize,
       fontColor: fontColor,
     };
-    this._setInput("");
-    this._setSTRING("");
-    // console.log(bullet);
+    this.setInput("");
+    this.setSTRING("");
+    console.log("the bullet", bullet);
     return bullet;
   }
 
@@ -140,10 +137,12 @@ class BulletScreen {
     let widthOfStr = bullet.str.length * 12;
     this.divPool[bullet.track].push(bullet);
     this.rect_panel = panel.getBoundingClientRect();
+
     this.frameRight = this.rect_panel.right;
     this.frameLeft = this.rect_panel.left;
     this.frameWidth = this.rect_panel.width;
     this.frameY = this.rect_panel.y;
+    // default bullet by the user screen
     bullet.tail = this.frameRight + widthOfStr;
     bullet.x = this.frameRight + 10;
     bullet.y =
@@ -156,15 +155,7 @@ class BulletScreen {
     newDiv.classList.add("bullet");
     newDiv.setAttribute("id", bullet.id);
 
-    // newDiv.innerHTML = bullet.str;
-    bullet.str.split("").map((i, idx) => {
-      let newSpan = document.createElement("span");
-      newSpan.setAttribute("id", `${bullet.id}_${idx}`);
-      newSpan.setAttribute("style", ``);
-      newSpan.innerHTML = i;
-      newDiv.appendChild(newSpan);
-    });
-    // color:${bullet.fontColor};
+    newDiv.innerHTML = bullet.str;
     newDiv.setAttribute(
       "style",
       `position:absolute; 
@@ -176,6 +167,7 @@ class BulletScreen {
     height:-moz-fit-content;
     font-size: ${bullet.fontSize}px;
     color:${bullet.fontColor};
+    visibility:hidden;
     `
     );
     //    font-size: ${fontSizeSet[Math.floor(Math.random() * fontSizeSet)]}px`
@@ -254,9 +246,6 @@ class BulletScreen {
           }
           // Display the bullet only when the bullet start to run, if it is wating then don't show it.
           if ((currentX > current_right && bulletPx > 0) || !PS) {
-            console.log("the fontSize", bullet.fontSize);
-            console.log("the width", i.width);
-            console.log("the fontSize * str", i.width / i.str.length);
             targetDiv.style.visibility = "visible";
           }
         }
@@ -269,138 +258,9 @@ class BulletScreen {
 }
 
 // Test
-let bulletScreen = new BulletScreen(panel, input, btn, 10);
+let bulletScreen = new BulletScreen(10, panel, input, btn);
 bulletScreen.start();
 
-const lyric = [
-  "早知結果如此何必當初曾相逢",
-  "相逢之後何須再問分手的理由",
-  "沒有月的星空",
-  "是我自己的星空",
-  "我飛也可以 跳也可以",
-  "不感到寂寞 有流星陪伴我",
-  "當然也許妳會感到一絲絲愧疚",
-  "諾言本身不會後悔出口的理由",
-  "沒有妳的影蹤",
-  "有我自己的影蹤",
-  "我哭也可以 笑也可以",
-  "天長或地久 是愛情的盡頭",
-  "下著雨的夜晚最美",
-  "將所有景物拋在半空之間",
-  "有妳的笑我無法成眠",
-  "無法成眠",
-  "怎又回到了起點",
-  "快讓我沒有力氣",
-  "快讓我沒有力氣",
-  "去想念妳",
-  "讓我可以隨著落在窗外的小雨消失在茫茫大地",
-  "讓我飛～讓我飛～在夜空",
-  "夜空裡才會讓我的心和懦弱那頭離得比較遠",
-  "飛翔時傷悲是一種奢侈的行為",
-  "我怎麼突然有一種莫名的喜悅當我穿梭在黑暗裡面",
-  "讓我飛～讓我飛～在夜空",
-  "夜空裡才會讓我的心和懦弱那頭離得比較遠",
-  "飛翔時傷悲是一種奢侈的行為",
-  "我變成一朵放縱的輕煙和小雨纏綿在冷冷北風裡面…",
-];
+let y = bulletScreen.newBullet("yes");
 
-const lyric2 = [
-  "たとえば",
-  "どうにかして君の中 ああ入っていって",
-  "その瞳から僕をのぞいたら",
-  "いろんなことちょっとはわかるかも",
-  "愛すれば",
-  "愛するほど",
-  "霧の中迷いこんで",
-  "手をつないだら行ってみよう",
-  "燃えるような月の輝く丘に",
-  "迎えにゆくからそこにいてよ",
-  "かけらでもいい",
-  "君の気持ち知るまで",
-  "今夜僕は寝ないよ",
-  "痛いこと",
-  "気持ちいいこと",
-  "それはみんな人それぞれで",
-  "ちょっとした違いにつまづいて",
-  "またしても僕は派手にころんだ",
-  "傷ついて",
-  "やっとわかる",
-  "それでもいい",
-  "遅くはない",
-  "手をつないだら行ってみよう",
-  "あやしい星の潜む丘に 茂みの奥へと進んでゆこう",
-  "怪我してもいい",
-  "はじけるような笑顔の",
-  "向こう側をみたいよ",
-  "手をつないだら行ってみよう",
-  "まんまるい月の輝く丘に",
-  "誰もがみんな照らしだされて",
-  "心の模様が空に映ってる",
-  "いつでもそうやって",
-  "笑ってないで",
-  "かけらでもいい",
-  "君の気持ち知るまで",
-  "今夜は一緒にいたいよ",
-];
-
-const lyric3 = [
-  "On the first page of our story",
-  "The future seemed so bright",
-  "Then this thing turned out so evil",
-  "I don't know why I'm still surprised",
-  "Even angels have their wicked schemes",
-  "And you take that to new extremes",
-  "But you'll always be my hero",
-  "Even though you've lost your mind",
-  "Just gonna stand there and watch me burn",
-  "Well that's alright because I like the way it hurts",
-  "Just gonna stand there and hear me cry",
-  "Well that's alright because I love the way you lie",
-  "Now there's gravel in our voices",
-  "Glasses shattered from the fight",
-  "In this tug of war you always win",
-  "Even when I'm right",
-  "Cuz you feed me fables from your head",
-  "With violent words and empty threats",
-  "And it's sick that all these battlesAre what keeps me satisfied",
-  "Just gonna stand there and watch me burn",
-  "Well that's alright because I like the way it hurts",
-  "Just gonna stand there and hear me cry",
-  "Well that's alright because I love the way you lie",
-  "I love the way you lieI love the way you lie",
-  "So maybe I'm a masochist",
-  "I try to run but I don't wanna ever leave",
-  "Till the walls are going up",
-  "I love the way you lie",
-  "I love the way you lie",
-];
-
-let lyric4 = [];
-let repeatTime = 10;
-
-for (let t = 0; t < repeatTime; t++) {
-  [lyric, lyric2, lyric3].map((arr) => {
-    arr.map((i) => {
-      lyric4.push(i);
-    });
-  });
-}
-
-let time = 0;
-
-const t0 = performance.now();
-
-const checkTime = lyric4.map((i) => {
-  new Promise((resolve) => {
-    time = time + 500;
-    setTimeout(() => {
-      bulletScreen.shootSTRING(bulletScreen.newBullet(i), bulletScreen.panel);
-    }, time);
-    resolve();
-  });
-});
-
-Promise.all(checkTime).then(() => {
-  const t1 = performance.now();
-  console.log("Call the map lyrics takes" + (t1 - t0) + " milliseonds");
-});
+console.log("the bullet obj", y);
