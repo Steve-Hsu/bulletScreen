@@ -3,6 +3,7 @@ const panel = document.querySelector(".panel");
 const input = document.querySelector("#input_01");
 const btn = document.querySelector(".input_btn");
 
+// Class test
 class BulletScreen {
   // @ Introcude:
   // @ Attribute:
@@ -11,9 +12,10 @@ class BulletScreen {
   //      btn : For user to send out the meg
   //      tracks : Defines how many track of bullet you want the screen have.
   // @ Usage:
-  // ".start()" : After declare a instance for the class, call this function to start the addEventListener for input and btn.
-  // ".newBullet("str")" : Create a new bullet object, which contains all information how the bullet dispalys on screen
-  // ".shootSTRING("the String here")" : You can shoot any string directly by this function, the attribute it takes is the object that genereated by ".newBullet()".
+  // ".start()" : Funtion, For local user test.
+  // ".STRING" : String, The variable for hold string of bullet, you can enter string to bullet with this variable.
+  // ".newBullet("str")" : Function,  Create a new bullet object, which contains all information how the bullet dispalys on screen
+  // ".shootSTRING(bullet)" : Function, You can shoot any string directly by this function, the attribute it takes is the object that genereated by ".newBullet()".
 
   constructor(tracks, panel, input, btn) {
     this.panel = panel || {};
@@ -37,22 +39,22 @@ class BulletScreen {
     this.topPadding = 20;
   }
 
-  setSTRING(str) {
+  _setSTRING(str) {
     this.STRING = str;
   }
-  setInput(str) {
+  _setInput(str) {
     this.input.value = str;
   }
 
   start() {
-    this.inputListener();
-    this.btnListener();
+    this._inputListener();
+    this._btnListener();
   }
 
   //@ Set Event
-  inputListener() {
+  _inputListener() {
     this.input.addEventListener("change", (e) => {
-      this.setSTRING(e.target.value);
+      this._setSTRING(e.target.value);
     });
 
     this.input.addEventListener("keyup", (e) => {
@@ -62,14 +64,14 @@ class BulletScreen {
       }
     });
   }
-  btnListener() {
+  _btnListener() {
     this.btn.addEventListener("click", () => {
       if (this.STRING !== "") {
         this.shootSTRING(this.newBullet(this.STRING), this.panel);
       }
     });
   }
-  selectTrack(tracks, pool) {
+  _selectTrack(tracks, pool) {
     // console.log("this.pool", this.pool);
     // console.log("the pool", pool);
     let firstLayerTrack = Math.floor(Math.random() * tracks);
@@ -94,7 +96,7 @@ class BulletScreen {
   }
 
   newBullet(str) {
-    let track = this.selectTrack(this.tracks, this.divPool);
+    let track = this._selectTrack(this.tracks, this.divPool);
     let speed = this.speedSet[Math.floor(Math.random() * this.speedSet.length)];
     let newId = Math.random().toString(36).substring(2, 15);
     let fontSize = this.fontSizeSet[
@@ -127,9 +129,9 @@ class BulletScreen {
       fontSize: fontSize,
       fontColor: fontColor,
     };
-    this.setInput("");
-    this.setSTRING("");
-    console.log("the bullet", bullet);
+    this._setInput("");
+    this._setSTRING("");
+    // console.log("the bullet", bullet);
     return bullet;
   }
 
@@ -174,19 +176,19 @@ class BulletScreen {
     newDiv.style.top = bullet.y + "px";
 
     setTimeout(() => {
-      this.drawDiv(newDiv, bullet);
+      this._drawDiv(newDiv, bullet);
     }, bullet.timeWait);
   }
 
-  drawDiv(div, bullet) {
+  _drawDiv(div, bullet) {
     this.panel.appendChild(div);
     const theDiv = div;
     const theID = theDiv.id;
     const rectX = theDiv.getBoundingClientRect().x;
-    this.moveDiv(rectX, theID, bullet);
+    this._moveDiv(rectX, theID, bullet);
   }
 
-  moveDiv(currentX, id, bullet) {
+  _moveDiv(currentX, id, bullet) {
     let rect_panel = this.panel.getBoundingClientRect();
     let current_left = rect_panel.left;
     let current_right = rect_panel.right;
@@ -252,7 +254,7 @@ class BulletScreen {
       });
 
       targetDiv.style.left = currentX + "px";
-      this.moveDiv(newPosition - bulletPx, id, bullet);
+      this._moveDiv(newPosition - bulletPx, id, bullet);
     }, bulletMs);
   }
 }
@@ -260,7 +262,3 @@ class BulletScreen {
 // Test
 let bulletScreen = new BulletScreen(10, panel, input, btn);
 bulletScreen.start();
-
-let y = bulletScreen.newBullet("yes");
-
-console.log("the bullet obj", y);
