@@ -5,14 +5,14 @@ const btn = document.querySelector(".input_btn");
 
 // Class test
 class BulletScreen {
-  // @ Introcude:
   // @ Attribute:
+  //      tracks : Defines how many track of bullet you want the screen have.
   //      panel : div, The frame of the bulletScreen, in practice, it should be the screen of vedio.
   //      input : The input to enter the string for the user
   //      btn : For user to send out the meg
-  //      tracks : Defines how many track of bullet you want the screen have.
+
   // @ Usage:
-  // ".start()" : Funtion, For local user test.
+  // ".start()" : Function, For local user test.
   // ".STRING" : String, The variable for hold string of bullet, you can enter string to bullet with this variable.
   // ".newBullet("str")" : Function,  Create a new bullet object, which contains all information how the bullet dispalys on screen
   // ".shootSTRING(bullet)" : Function, You can shoot any string directly by this function, the attribute it takes is the object that genereated by ".newBullet()".
@@ -262,3 +262,137 @@ class BulletScreen {
 // Test
 let bulletScreen = new BulletScreen(10, panel, input, btn);
 bulletScreen.start();
+
+const lyric = [
+  "早知結果如此何必當初曾相逢",
+  "相逢之後何須再問分手的理由",
+  "沒有月的星空",
+  "是我自己的星空",
+  "我飛也可以 跳也可以",
+  "不感到寂寞 有流星陪伴我",
+  "當然也許妳會感到一絲絲愧疚",
+  "諾言本身不會後悔出口的理由",
+  "沒有妳的影蹤",
+  "有我自己的影蹤",
+  "我哭也可以 笑也可以",
+  "天長或地久 是愛情的盡頭",
+  "下著雨的夜晚最美",
+  "將所有景物拋在半空之間",
+  "有妳的笑我無法成眠",
+  "無法成眠",
+  "怎又回到了起點",
+  "快讓我沒有力氣",
+  "快讓我沒有力氣",
+  "去想念妳",
+  "讓我可以隨著落在窗外的小雨消失在茫茫大地",
+  "讓我飛～讓我飛～在夜空",
+  "夜空裡才會讓我的心和懦弱那頭離得比較遠",
+  "飛翔時傷悲是一種奢侈的行為",
+  "我怎麼突然有一種莫名的喜悅當我穿梭在黑暗裡面",
+  "讓我飛～讓我飛～在夜空",
+  "夜空裡才會讓我的心和懦弱那頭離得比較遠",
+  "飛翔時傷悲是一種奢侈的行為",
+  "我變成一朵放縱的輕煙和小雨纏綿在冷冷北風裡面…",
+];
+
+const lyric2 = [
+  "たとえば",
+  "どうにかして君の中 ああ入っていって",
+  "その瞳から僕をのぞいたら",
+  "いろんなことちょっとはわかるかも",
+  "愛すれば",
+  "愛するほど",
+  "霧の中迷いこんで",
+  "手をつないだら行ってみよう",
+  "燃えるような月の輝く丘に",
+  "迎えにゆくからそこにいてよ",
+  "かけらでもいい",
+  "君の気持ち知るまで",
+  "今夜僕は寝ないよ",
+  "痛いこと",
+  "気持ちいいこと",
+  "それはみんな人それぞれで",
+  "ちょっとした違いにつまづいて",
+  "またしても僕は派手にころんだ",
+  "傷ついて",
+  "やっとわかる",
+  "それでもいい",
+  "遅くはない",
+  "手をつないだら行ってみよう",
+  "あやしい星の潜む丘に 茂みの奥へと進んでゆこう",
+  "怪我してもいい",
+  "はじけるような笑顔の",
+  "向こう側をみたいよ",
+  "手をつないだら行ってみよう",
+  "まんまるい月の輝く丘に",
+  "誰もがみんな照らしだされて",
+  "心の模様が空に映ってる",
+  "いつでもそうやって",
+  "笑ってないで",
+  "かけらでもいい",
+  "君の気持ち知るまで",
+  "今夜は一緒にいたいよ",
+];
+
+const lyric3 = [
+  "On the first page of our story",
+  "The future seemed so bright",
+  "Then this thing turned out so evil",
+  "I don't know why I'm still surprised",
+  "Even angels have their wicked schemes",
+  "And you take that to new extremes",
+  "But you'll always be my hero",
+  "Even though you've lost your mind",
+  "Just gonna stand there and watch me burn",
+  "Well that's alright because I like the way it hurts",
+  "Just gonna stand there and hear me cry",
+  "Well that's alright because I love the way you lie",
+  "Now there's gravel in our voices",
+  "Glasses shattered from the fight",
+  "In this tug of war you always win",
+  "Even when I'm right",
+  "Cuz you feed me fables from your head",
+  "With violent words and empty threats",
+  "And it's sick that all these battlesAre what keeps me satisfied",
+  "Just gonna stand there and watch me burn",
+  "Well that's alright because I like the way it hurts",
+  "Just gonna stand there and hear me cry",
+  "Well that's alright because I love the way you lie",
+  "I love the way you lieI love the way you lie",
+  "So maybe I'm a masochist",
+  "I try to run but I don't wanna ever leave",
+  "Till the walls are going up",
+  "I love the way you lie",
+  "I love the way you lie",
+];
+
+let lyric4 = [];
+let repeatTime = 10;
+
+for (let t = 0; t < repeatTime; t++) {
+  [lyric, lyric2, lyric3].map((arr) => {
+    arr.map((i) => {
+      lyric4.push(i);
+    });
+  });
+}
+
+let time = 0;
+console.log(lyric4);
+
+const t0 = performance.now();
+
+const checkTime = lyric4.map((i) => {
+  new Promise((resolve) => {
+    time = time + 300;
+    setTimeout(() => {
+      bulletScreen.shootSTRING(bulletScreen.newBullet(i), bulletScreen.panel);
+    }, time);
+    resolve();
+  });
+});
+
+Promise.all(checkTime).then(() => {
+  const t1 = performance.now();
+  console.log("Call the map lyrics takes" + (t1 - t0) + " milliseonds");
+});
