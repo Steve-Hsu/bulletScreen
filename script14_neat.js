@@ -37,6 +37,10 @@ class BulletScreen {
     this.divPool = Array.from(Array(this.tracks).keys()).map(() => []);
     this.STRING = "";
     this.topPadding = 20;
+    this.currentX = 0;
+    // this.currentDivId = "";
+    this.currentBullet = null;
+    this.nextMove = 0;
   }
 
   _setSTRING(str) {
@@ -61,7 +65,6 @@ class BulletScreen {
       if (e.keyCode === 13) {
         e.preventDefault();
         this.btn.click();
-        this._setInput("");
       }
     });
   }
@@ -69,6 +72,8 @@ class BulletScreen {
     this.btn.addEventListener("click", () => {
       if (this.STRING !== "") {
         this.shootSTRING(this.newBullet(this.STRING), this.panel);
+        this._setInput("");
+        this._setSTRING("");
       }
     });
   }
@@ -158,28 +163,30 @@ class BulletScreen {
 
     newDiv.style.top = bullet.y + "px";
 
-    setTimeout(() => {
-      this._drawDiv(newDiv, bullet);
-    }, bullet.timeWait);
+    this._drawDiv(newDiv, bullet);
   }
 
   _drawDiv(div, bullet) {
     this.panel.appendChild(div);
     const theDiv = div;
-    const theID = theDiv.id;
-    const rectX = theDiv.getBoundingClientRect().x;
-    this._moveDiv(rectX, theID, bullet);
+    // this.currentDivId = theDiv.id;
+    this.currentBullet = bullet;
+    this.currentX = theDiv.getBoundingClientRect().x;
+    this._moveDiv(bullet);
   }
 
-  _moveDiv(currentX, id, bullet) {
-    let rect_panel = this.panel.getBoundingClientRect();
-    let current_left = rect_panel.left;
-    let current_right = rect_panel.right;
-    let targetDiv = document.getElementById(id);
-    let theWidth = targetDiv.clientWidth;
-    let currentTrack = bullet.track;
+  _moveDiv(b) {
+    this.rect_panel = this.panel.getBoundingClientRect();
+    const bullet = b;
     let bulletId = bullet.id;
     let bulletMs = bullet.ms;
+    let currentX = bullet.x;
+    let current_left = this.rect_panel.left;
+    let current_right = this.rect_panel.right;
+    let targetDiv = document.getElementById(bulletId);
+    let theWidth = targetDiv.clientWidth;
+    let currentTrack = bullet.track;
+
     let disappearPoint = 0.8;
 
     //If the div's body (disappearPoint) run into the left side of the frame
@@ -202,7 +209,7 @@ class BulletScreen {
     let PS = this.divPool[currentTrack].find(({ id }) => id === bullet.PSId);
     let PStail = PS ? PS.tail : 0;
     let bulletPx = bullet.px;
-    let newPosition = currentX;
+    // let newPosition = currentX;
 
     setTimeout(() => {
       this.divPool[currentTrack].map((i, idx) => {
@@ -210,7 +217,7 @@ class BulletScreen {
           i.x = currentX;
           i.width = theWidth;
           i.tail = currentX + theWidth;
-          i.y = rect_panel.y + i.track * 28 + 2;
+          i.y = this.rect_panel.y + i.track * 28 + 2;
           if (PS && currentX < PStail) {
             // if the currentStr accidentally run ahead the previous str, then slow it down
             bulletPx = 0;
@@ -233,9 +240,10 @@ class BulletScreen {
           }
         }
       });
+      bullet.x = currentX - bulletPx;
 
       targetDiv.style.left = currentX + "px";
-      this._moveDiv(newPosition - bulletPx, id, bullet);
+      this._moveDiv(bullet);
     }, bulletMs);
   }
 }
@@ -348,7 +356,7 @@ const lyric3 = [
 ];
 
 let lyric4 = [];
-let repeatTime = 10;
+let repeatTime = 1;
 
 for (let t = 0; t < repeatTime; t++) {
   [lyric, lyric2, lyric3].map((arr) => {

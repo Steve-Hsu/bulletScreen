@@ -1,0 +1,41 @@
+@-webkit-keyframes bounce {
+  0% {
+    padding-top: 1px;
+  }
+  /* using padding as it does not affect position:relative of sublinks
+ * using 0 instead of 0 b/c of a box-model issue,
+ * on kids wiht margin, but parents without margin, just try out
+ */
+  50% {
+    padding-top: 5px;
+  } /*desired value +1*/
+  100% {
+    padding-top: 1px;
+  }
+}
+
+/* #bouncy01,
+#bouncy02 {
+  margin: 10px;
+  background: #ff0000;
+  padding: 10px;
+  border: 1px solid #777;
+  width: 30px;
+  position: absolute;
+}
+#bouncywrap {
+  -webkit-animation: bounce 0.125s ease-in-out infinite;
+  position: relative;
+  width: 140px;
+  height: 50px;
+  /*    background:grey; /*debug*/
+}
+#bouncy02 {
+  background: #ffff00;
+  left: 60px;
+  top: 2px; /*half of desired value, just a fix for the optic*/
+}
+#bouncy02:hover {
+  position: relative; /*here happens the magic*/
+  top: 0px;
+} */
