@@ -203,7 +203,7 @@ class BulletScreen {
       this.divPool[currentTrack] = this.divPool[currentTrack].filter(
         (i) => i.id !== bulletId
       );
-      console.log("the array", this.divPool);
+
       return targetDiv.remove();
     }
 
