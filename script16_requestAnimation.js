@@ -175,7 +175,7 @@ class BulletScreen {
     this.currentBullet = bullet;
     this.currentX = theDiv.getBoundingClientRect().x;
     this._moveDiv(bullet);
-    console.log("the anime of ", bullet.id, " start");
+    // console.log("the anime of ", bullet.id, " start");
   }
 
   _moveDiv(b) {
@@ -192,7 +192,7 @@ class BulletScreen {
       elapsed = now - then;
       if (elapsed > fpsInterval) {
         then = now - (elapsed % fpsInterval);
-        console.log(" the loopFunc is running");
+        // console.log(" the loopFunc is running");
         let bulletId = bullet.id;
         let bulletPx = bullet.px;
         let currentX = bullet.x;
@@ -217,7 +217,7 @@ class BulletScreen {
           this.divPool[currentTrack] = this.divPool[currentTrack].filter(
             (i) => i.id !== bulletId
           );
-          console.log("the anime of ", bullet.id, " canceled");
+          // console.log("the anime of ", bullet.id, " canceled");
           cancelAnimationFrame(anime);
           return targetDiv.remove();
         }
@@ -386,7 +386,7 @@ for (let t = 0; t < repeatTime; t++) {
 }
 
 let time = 0;
-console.log(lyric4);
+// console.log(lyric4);
 
 const t0 = performance.now();
 
