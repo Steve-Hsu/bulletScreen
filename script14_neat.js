@@ -97,9 +97,6 @@ class BulletScreen {
     )},${Math.floor(Math.random() * this.colorRange)},${Math.floor(
       Math.random() * this.colorRange
     )})`;
-    let PSId = this.divPool[track][this.divPool[track].length - 1]
-      ? this.divPool[track][this.divPool[track].length - 1].id
-      : "noPS";
 
     let bullet = {
       id: newId,
@@ -112,7 +109,7 @@ class BulletScreen {
       ms: speed.ms,
       px: speed.px,
       timeWait: 0,
-      PSId: PSId,
+      PSId: "noPS",
       collision: false,
       fontSize: fontSize,
       fontColor: fontColor,
@@ -126,6 +123,15 @@ class BulletScreen {
   shootSTRING(bullet, panel) {
     // 1 str in chinese is about 16 px, number and str in english are about 8px. Here take the central value 12.
     let widthOfStr = bullet.str.length * 12;
+    let previousPS = this.divPool[bullet.track][
+      this.divPool[bullet.track].length - 1
+    ];
+
+    if (previousPS) {
+      bullet.PSId = this.divPool[bullet.track][
+        this.divPool[bullet.track].length - 1
+      ].id;
+    }
     this.divPool[bullet.track].push(bullet);
     this.rect_panel = panel.getBoundingClientRect();
     this.frameRight = this.rect_panel.right;

@@ -26,17 +26,18 @@ class BulletScreen {
     this.frameLeft = this.panel_rect.left || 0;
     this.frameWidth = this.panel_rect.width || 0;
     this.frameY = this.panel_rect.y || 0;
-    this.speedSet = [
-      { ms: 16, px: 2 },
-      { ms: 16, px: 5 },
-      { ms: 16, px: 8 },
-    ];
+    this.speedSet = [{ px: 2 }, { px: 5 }, { px: 8 }];
     this.fontSizeSet = [18, 22, 28];
     this.tracks = tracks; // Define how may track the bulletScreen has;
     this.colorRange = 220; // Value from 0 - 255 for RGB;
     this.divPool = Array.from(Array(this.tracks).keys()).map(() => []);
     this.STRING = "";
     this.topPadding = 20;
+    this.currentX = 0;
+    // this.currentDivId = "";
+    this.currentBullet = null;
+    this.nextMove = 0;
+    this.fps = 60;
   }
 
   _setSTRING(str) {
@@ -102,7 +103,6 @@ class BulletScreen {
       y: 0,
       width: 0,
       tail: 0,
-      ms: speed.ms,
       px: speed.px,
       timeWait: 0,
       PSId: "noPS",
@@ -128,7 +128,6 @@ class BulletScreen {
         this.divPool[bullet.track].length - 1
       ].id;
     }
-
     this.divPool[bullet.track].push(bullet);
     this.rect_panel = panel.getBoundingClientRect();
     this.frameRight = this.rect_panel.right;
@@ -166,85 +165,105 @@ class BulletScreen {
 
     newDiv.style.top = bullet.y + "px";
 
-    setTimeout(() => {
-      this._drawDiv(newDiv, bullet);
-    }, bullet.timeWait);
+    this._drawDiv(newDiv, bullet);
   }
 
   _drawDiv(div, bullet) {
     this.panel.appendChild(div);
     const theDiv = div;
-    const theID = theDiv.id;
-    const rectX = theDiv.getBoundingClientRect().x;
-    this._moveDiv(rectX, theID, bullet);
+    // this.currentDivId = theDiv.id;
+    this.currentBullet = bullet;
+    this.currentX = theDiv.getBoundingClientRect().x;
+    this._moveDiv(bullet);
+    console.log("the anime of ", bullet.id, " start");
   }
 
-  _moveDiv(currentX, id, bullet) {
-    let rect_panel = this.panel.getBoundingClientRect();
-    let current_left = rect_panel.left;
-    let current_right = rect_panel.right;
-    let targetDiv = document.getElementById(id);
-    let theWidth = targetDiv.clientWidth;
-    let currentTrack = bullet.track;
-    let bulletId = bullet.id;
-    let bulletMs = bullet.ms;
-    let disappearPoint = 0.8;
+  _moveDiv(b) {
+    this.rect_panel = this.panel.getBoundingClientRect();
+    const bullet = b;
+    let anime;
 
-    //If the div's body (disappearPoint) run into the left side of the frame
-    if (currentX + theWidth * disappearPoint < current_left) {
-      let disappearSpeed = Number("0.8" + bulletMs);
-      let newFontSize =
-        Number(targetDiv.style.fontSize.slice(0, -2)) * disappearSpeed;
+    let fpsInterval, startTime, now, then, elapsed;
+    fpsInterval = 1000 / this.fps;
+    then = Date.now();
+    startTime = then;
+    const loopFunc = () => {
+      now = Date.now();
+      elapsed = now - then;
+      if (elapsed > fpsInterval) {
+        then = now - (elapsed % fpsInterval);
+        console.log(" the loopFunc is running");
+        let bulletId = bullet.id;
+        let bulletPx = bullet.px;
+        let currentX = bullet.x;
+        let current_left = this.rect_panel.left;
+        let current_right = this.rect_panel.right;
+        let targetDiv = document.getElementById(bulletId);
+        let theWidth = targetDiv.clientWidth;
+        let currentTrack = bullet.track;
 
-      targetDiv.style.fontSize = newFontSize + "px";
-    }
-    //If the div run into the left side of the frame
-    if (currentX < current_left - theWidth / disappearPoint) {
-      this.divPool[currentTrack] = this.divPool[currentTrack].filter(
-        (i) => i.id !== bulletId
-      );
-      console.log("the array", this.divPool);
-      return targetDiv.remove();
-    }
+        let disappearPoint = 0.8;
 
-    let PS = this.divPool[currentTrack].find(({ id }) => id === bullet.PSId);
-    let PStail = PS ? PS.tail : 0;
-    let bulletPx = bullet.px;
-    let newPosition = currentX;
+        //If the div's body (disappearPoint) run into the left side of the frame
+        if (currentX + theWidth * disappearPoint < current_left) {
+          let disappearSpeed = Number("0.8" + bulletPx);
+          let newFontSize =
+            Number(targetDiv.style.fontSize.slice(0, -2)) * disappearSpeed;
 
-    setTimeout(() => {
-      this.divPool[currentTrack].map((i, idx) => {
-        if (i.id === bulletId) {
-          i.x = currentX;
-          i.width = theWidth;
-          i.tail = currentX + theWidth;
-          i.y = rect_panel.y + i.track * 28 + 2;
-          if (PS && currentX < PStail) {
-            // if the currentStr accidentally run ahead the previous str, then slow it down
-            bulletPx = 0;
-          } else if (PS && currentX < 5 + PStail) {
-            bulletPx = 2;
-          } else if (PS && currentX < 30 + PStail) {
-            bulletPx = 2.5;
-          } else if (PS && currentX < 60 + PStail) {
-            bulletPx = 3.5;
-          } else if (PS && currentX < 90 + PStail) {
-            bulletPx = 3.8;
-          } else if (PS && currentX < 120 + PStail) {
-            bulletPx = 4;
-          } else if (PS && currentX < 160 + PStail) {
-            bulletPx = bulletPx * 0.952;
-          }
-          // Display the bullet only when the bullet start to run, if it is wating then don't show it.
-          if ((currentX > current_right && bulletPx > 0) || !PS) {
-            targetDiv.style.visibility = "visible";
-          }
+          targetDiv.style.fontSize = newFontSize + "px";
         }
-      });
+        //If the div run into the left side of the frame
+        if (currentX < current_left - theWidth / disappearPoint) {
+          this.divPool[currentTrack] = this.divPool[currentTrack].filter(
+            (i) => i.id !== bulletId
+          );
+          console.log("the anime of ", bullet.id, " canceled");
+          cancelAnimationFrame(anime);
+          return targetDiv.remove();
+        }
 
-      targetDiv.style.left = currentX + "px";
-      this._moveDiv(newPosition - bulletPx, id, bullet);
-    }, bulletMs);
+        let PS = this.divPool[currentTrack].find(
+          ({ id }) => id === bullet.PSId
+        );
+        let PStail = PS ? PS.tail : 0;
+        // let newPosition = currentX;
+
+        this.divPool[currentTrack].map((i) => {
+          if (i.id === bulletId) {
+            i.x = currentX;
+            i.width = theWidth;
+            i.tail = currentX + theWidth;
+            i.y = this.rect_panel.y + i.track * 28 + 2;
+            if (PS && currentX < PStail) {
+              // if the currentStr accidentally run ahead the previous str, then slow it down
+              bulletPx = 0;
+            } else if (PS && currentX < 5 + PStail) {
+              bulletPx = 2;
+            } else if (PS && currentX < 30 + PStail) {
+              bulletPx = 2.5;
+            } else if (PS && currentX < 60 + PStail) {
+              bulletPx = 3.5;
+            } else if (PS && currentX < 90 + PStail) {
+              bulletPx = 3.8;
+            } else if (PS && currentX < 120 + PStail) {
+              bulletPx = 4;
+            } else if (PS && currentX < 160 + PStail) {
+              bulletPx = bulletPx * 0.952;
+            }
+            // Display the bullet only when the bullet start to run, if it is wating then don't show it.
+            if ((currentX > current_right && bulletPx > 0) || !PS) {
+              targetDiv.style.visibility = "visible";
+            }
+          }
+        });
+        bullet.x = currentX - bulletPx;
+
+        targetDiv.style.left = currentX + "px";
+      }
+
+      anime = requestAnimationFrame(loopFunc);
+    };
+    anime = requestAnimationFrame(loopFunc);
   }
 }
 
