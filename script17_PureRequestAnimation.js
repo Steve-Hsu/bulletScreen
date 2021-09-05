@@ -27,8 +27,8 @@ class BulletScreen {
     this.frameWidth = this.panel_rect.width || 0;
     this.frameY = this.panel_rect.y || 0;
     this.speedSet = [
-      { ms: 16, px: 2 },
-      { ms: 16, px: 5 },
+      // { ms: 16, px: 2 },
+      // { ms: 16, px: 5 },
       { ms: 16, px: 8 },
     ];
     this.fontSizeSet = [18, 22, 28];
@@ -154,12 +154,12 @@ class BulletScreen {
     newDiv.innerHTML = bullet.str;
     newDiv.setAttribute(
       "style",
-      `position:absolute; 
-    left:${bullet.x}px; 
-    display:inline-block;  
-    width:fit-content; 
-    width:-moz-fit-content; 
-    height:fit-content; 
+      `position:absolute;
+    left:${bullet.x}px;
+    display:inline-block;
+    width:fit-content;
+    width:-moz-fit-content;
+    height:fit-content;
     height:-moz-fit-content;
     font-size: ${bullet.fontSize}px;
     color:${bullet.fontColor};
@@ -385,7 +385,7 @@ const t0 = performance.now();
 
 const checkTime = lyric4.map((i) => {
   new Promise((resolve) => {
-    time = time + 300;
+    time = time + 700;
     setTimeout(() => {
       bulletScreen.shootSTRING(bulletScreen.newBullet(i), bulletScreen.panel);
     }, time);
